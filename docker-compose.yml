@@ -1,0 +1,8 @@
+version: '3'
+services:
+  comparisons:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      AZURE_STORAGE_CONN_STRING: "${AZURE_STORAGE_CONN_STRING}"

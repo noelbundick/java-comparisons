@@ -8,6 +8,7 @@
         <version>2.2.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.noelbundick</groupId>
     <artifactId>comparisons</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -47,7 +48,9 @@
         </dependency>
     </dependencies>
 
+    <packaging>jar</packaging>
     <build>
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
