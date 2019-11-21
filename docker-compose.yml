@@ -6,3 +6,8 @@ services:
       - "8080:8080"
     environment:
       AZURE_STORAGE_CONN_STRING: "${AZURE_STORAGE_CONN_STRING}"
+
+  elasticsearch:
+    image: "elasticsearch:7.4.2"
+    environment:
+      discovery.type: single-node

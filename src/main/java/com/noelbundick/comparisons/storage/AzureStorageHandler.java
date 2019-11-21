@@ -1,4 +1,4 @@
-package com.noelbundick.comparisons;
+package com.noelbundick.comparisons.storage;
 
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.BlobServiceAsyncClient;
@@ -15,12 +15,12 @@ import java.util.*;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-public class StorageHandler {
+public class AzureStorageHandler {
     private static ParameterizedTypeReference<Map<String, List<BlobItem>>> listAllBlobsTypeRef = new ParameterizedTypeReference<>() {};
 
     private final BlobServiceAsyncClient serviceClient;
 
-    public StorageHandler(String connectionString) {
+    public AzureStorageHandler(String connectionString) {
         serviceClient = new BlobServiceClientBuilder()
             .connectionString(connectionString)
             .buildAsyncClient();
