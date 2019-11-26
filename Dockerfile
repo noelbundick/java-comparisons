@@ -21,7 +21,12 @@ ENV MAVEN_CONFIG "/root/.m2"
 
 # Build the application
 FROM maven AS build
+
 WORKDIR /build
+
+# Install unpublished dependencies
+COPY ./lib ./lib
+RUN mvn install:install-file -Dfile=./lib/azure-search-1.0.0-preview.2.jar -DpomFile=./lib/azure-search-1.0.0-preview.2.pom
 
 # Only pull dependencies when pom.xml has changed
 COPY ./pom.xml ./pom.xml
@@ -29,10 +34,12 @@ RUN mvn dependency:go-offline -B
 
 # Provide some bogus environment variables - required for application startup
 ENV AZURE_STORAGE_CONN_STRING="DefaultEndpointsProtocol=https;AccountName=azurestorage;AccountKey=invalid_key;EndpointSuffix=core.windows.net"
+ENV AZURE_SEARCH_ENDPOINT="https://azuresearch.search.windows.net"
+ENV AZURE_SEARCH_KEY="bogus-key"
 
 # Build the jar
 COPY ./src ./src
-RUN mvn package
+RUN mvn -DfinalName=app package
 
 # Run the app in a JRE alpine image
 FROM mcr.microsoft.com/java/jre:${BASE_TAG} AS app
@@ -40,6 +47,7 @@ WORKDIR /app
 
 EXPOSE 8080
 
-# Run app.jar - defined in pom.xml via <finalName>
-CMD ["java", "-jar", "-Djava.security.egd=file:/dev/./urandom", "app.jar"]
+# use a nonblocking entropy source at startup
+# disable ReactorDebugAgent - it needs a full JDK
+CMD ["java", "-jar", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.reactor.debug-agent.enabled=false", "app.jar"]
 COPY --from=build /build/target/app.jar /app

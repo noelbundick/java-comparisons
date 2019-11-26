@@ -19,6 +19,12 @@ public class Router {
     @Value("${AZURE_STORAGE_CONN_STRING}")
     private String storageConnString;
 
+    @Value("${AZURE_SEARCH_ENDPOINT}")
+    private String searchEndpoint;
+
+    @Value("${AZURE_SEARCH_KEY}")
+    private String searchAdminKey;
+
     @Bean
     public RouterFunction<ServerResponse> hello() {
         return route()
@@ -37,8 +43,10 @@ public class Router {
     public RouterFunction<ServerResponse> search() {
         RouteBuilder<SearchHandler> routeBuilder = new RouteBuilder<>(SearchHandler.class);
         return route()
-            .path("search/azure", builder -> routeBuilder.buildRoutes(builder, new AzureSearchHandler()))
-            .path("search/elasticsearch", builder -> routeBuilder.buildRoutes(builder, new ElasticsearchHandler()))
+            .path("search/azure",
+                builder -> routeBuilder.buildRoutes(builder, new AzureSearchHandler(searchEndpoint, searchAdminKey)))
+            .path("search/elasticsearch",
+                builder -> routeBuilder.buildRoutes(builder, new ElasticsearchHandler()))
             .build();
     }
 

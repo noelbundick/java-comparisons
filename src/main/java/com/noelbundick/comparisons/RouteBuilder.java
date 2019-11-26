@@ -10,15 +10,15 @@ import java.util.Optional;
 /**
  * Uses a type to generate GET methods for each of its methods
  */
-public class RouteBuilder<T> {
+class RouteBuilder<T> {
     private Class<T> clazz;
 
-    public RouteBuilder(Class<T> clazz) {
+    RouteBuilder(Class<T> clazz) {
         this.clazz = clazz;
     }
 
     @SuppressWarnings("unchecked")
-    public RouterFunctions.Builder buildRoutes(RouterFunctions.Builder builder, T handler) {
+    RouterFunctions.Builder buildRoutes(RouterFunctions.Builder builder, T handler) {
         Method[] methods = clazz.getMethods();
 
         for (Method m : methods) {
@@ -26,8 +26,11 @@ public class RouteBuilder<T> {
                 try {
                     return Optional.ofNullable((Mono<ServerResponse>)m.invoke(handler, req))
                         .orElse(ServerResponse.status(500).bodyValue("Not implemented"))
-                        .onErrorResume(e -> ServerResponse.status(500)
-                            .bodyValue(String.format("There was an unexpected error: %s", e)));
+                        .onErrorResume(e -> {
+                            e.printStackTrace();
+                            return ServerResponse.status(500)
+                                .bodyValue(String.format("There was an unexpected error: %s", e));
+                        });
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);

@@ -6,12 +6,12 @@ import reactor.core.publisher.Mono;
 
 public interface SearchHandler {
     // Cross-cutting concerns
-    Mono<ServerResponse> clientCreation(ServerRequest request);
     Mono<ServerResponse> errorHandling(ServerRequest request);
 
     // Getting data into the service
     Mono<ServerResponse> indexing(ServerRequest request);
     Mono<ServerResponse> bulkIndexing(ServerRequest request);
+    Mono<ServerResponse> clear(ServerRequest request);
 
     // Retrieving data
     Mono<ServerResponse> listDocuments(ServerRequest request);

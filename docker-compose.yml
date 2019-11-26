@@ -6,6 +6,8 @@ services:
       - "8080:8080"
     environment:
       AZURE_STORAGE_CONN_STRING: "${AZURE_STORAGE_CONN_STRING}"
+      AZURE_SEARCH_ENDPOINT: "${AZURE_SEARCH_ENDPOINT}"
+      AZURE_SEARCH_KEY: "${AZURE_SEARCH_KEY}"
 
   elasticsearch:
     image: "elasticsearch:7.4.2"

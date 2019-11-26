@@ -8,11 +8,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 
 public class ElasticsearchHandler implements SearchHandler {
     @Override
-    public Mono<ServerResponse> clientCreation(ServerRequest request) {
-        return null;
-    }
-
-    @Override
     public Mono<ServerResponse> errorHandling(ServerRequest request) {
         return null;
     }
@@ -27,6 +22,12 @@ public class ElasticsearchHandler implements SearchHandler {
         return null;
     }
 
+    @Override
+    public Mono<ServerResponse> clear(ServerRequest request) {
+        return null;
+    }
+
+    @Override
     public Mono<ServerResponse> listDocuments(ServerRequest request) {
         return ok().bodyValue("elastic");
     }
