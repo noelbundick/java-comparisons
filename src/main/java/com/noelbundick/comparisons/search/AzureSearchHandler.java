@@ -1,9 +1,9 @@
 package com.noelbundick.comparisons.search;
 
-import com.azure.core.http.rest.PagedFlux;
-import com.azure.core.http.rest.PagedFluxBase;
-import com.azure.search.*;
-import com.azure.search.common.SearchPagedResponse;
+import com.azure.search.ApiKeyCredentials;
+import com.azure.search.SearchIndexAsyncClient;
+import com.azure.search.SearchServiceAsyncClient;
+import com.azure.search.SearchServiceClientBuilder;
 import com.azure.search.models.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -96,6 +96,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Delete the entire index
     public Mono<ServerResponse> clear(ServerRequest request) {
         DeleteIndexRequest deleteRequest = new DeleteIndexRequest("hotels");
         return Mono.<AcknowledgedResponse>create(sink -> client.indices().deleteAsync(deleteRequest, RequestOptions.DEFAULT, getListenerForSink(sink)))
@@ -103,6 +104,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Get a count of all documents in the index
     public Mono<ServerResponse> count(ServerRequest request) {
         CountRequest countRequest = new CountRequest("hotels");
         return Mono.<CountResponse>create(sink -> client.countAsync(countRequest, RequestOptions.DEFAULT, getListenerForSink(sink)))
@@ -110,6 +112,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Simple string search
     public Mono<ServerResponse> search(ServerRequest request) {
         SearchRequest searchRequest = new SearchRequest("hotels");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
@@ -121,6 +124,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Scroll the results, 5 at a time
     public Mono<ServerResponse> searchWithPaging(ServerRequest request) {
         Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1));
 
@@ -149,6 +153,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Use the aggregations API
     public Mono<ServerResponse> searchWithFacets(ServerRequest request) {
         SearchRequest searchRequest = new SearchRequest("hotels");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
@@ -164,6 +169,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Bring-your-own custom marshaling with an ObjectMapper
     public Mono<ServerResponse> searchWithCustomTypes(ServerRequest request) {
         SearchRequest searchRequest = new SearchRequest("hotels");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
@@ -181,6 +187,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Create an index using only a name
     public Mono<ServerResponse> indexManagement(ServerRequest request) {
         CreateIndexRequest createRequest = new CreateIndexRequest("hotels");
         return Mono.<CreateIndexResponse>create(sink -> client.indices().createAsync(createRequest, RequestOptions.DEFAULT, getListenerForSink(sink)))
@@ -188,6 +195,7 @@ public class ElasticsearchHandler implements SearchHandler {
     }
 
     @Override
+    // Drop and recreate an index, then upload some data
     public Mono<ServerResponse> reset(ServerRequest request) {
         return clear(request)
             .onErrorResume(ElasticsearchException.class, err -> ok().bodyValue("ignored"))
