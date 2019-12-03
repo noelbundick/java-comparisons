@@ -1,16 +1,15 @@
 package com.noelbundick.comparisons.search;
 
-import com.azure.search.ApiKeyCredentials;
-import com.azure.search.SearchIndexAsyncClient;
-import com.azure.search.SearchServiceAsyncClient;
-import com.azure.search.SearchServiceClientBuilder;
+import com.azure.core.http.rest.PagedFlux;
+import com.azure.core.http.rest.PagedFluxBase;
+import com.azure.search.*;
 import com.azure.search.common.SearchPagedResponse;
 import com.azure.search.models.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.noelbundick.comparisons.search.models.Hotel;
+import com.noelbundick.comparisons.search.models.AzureHotel;
 import com.noelbundick.comparisons.search.models.HotelAddress;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -50,34 +49,35 @@ public class AzureSearchHandler implements SearchHandler {
     @Override
     // There are convenience methods for upload/merge/mergeOrUpload/delete
     public Mono<ServerResponse> indexing(ServerRequest request) {
-        Hotel hotel = new Hotel()
-            .hotelId(UUID.randomUUID().toString());
-        List<Hotel> documents = Collections.singletonList(hotel);
+        AzureHotel hotel = new AzureHotel()
+            .hotelId(UUID.randomUUID().toString())
+            .address(new HotelAddress().city("Seattle"));
+        List<AzureHotel> documents = Collections.singletonList(hotel);
 
         return indexClient.uploadDocuments(documents)
-            .flatMap(res -> ok().body(res, DocumentIndexResult.class));
+            .flatMap(res -> ok().bodyValue(String.format("Indexed %d documents", res.getResults().size())));
     }
 
     @Override
     // All indexing operations flow through an IndexBatch<T> that are sent to a single endpoint
     public Mono<ServerResponse> bulkIndexing(ServerRequest request) {
-        IndexBatch<Hotel> batch = new IndexBatch<>();
+        IndexBatch<AzureHotel> batch = new IndexBatch<>();
         for (int i = 0; i < 10000; i++) {
-            batch.addUploadAction(new Hotel()
+            batch.addUploadAction(new AzureHotel()
                 .hotelId(Integer.toString(i))
                 .address(new HotelAddress().city("Seattle"))
             );
         }
 
         return indexClient.index(batch)
-            .flatMap(res -> ok().bodyValue(String.format("Indexed %d documents", batch.getActions().size())));
+            .flatMap(res -> ok().bodyValue(String.format("Indexed %d documents", res.getResults().size())));
     }
 
     @Override
     // Retrieve all documents and delete them by id
     public Mono<ServerResponse> clear(ServerRequest request) {
         return indexClient.search("*")
-            .map(res -> (String)res.getDocument().get("HotelId"))
+            .map(res -> (String) res.getDocument().get("HotelId"))
             .collectList()
             .flatMap(ids -> {
                 IndexBatch<?> batch = new IndexBatch<>();
@@ -90,10 +90,10 @@ public class AzureSearchHandler implements SearchHandler {
     }
 
     @Override
-    // List all documents in an index via *
-    public Mono<ServerResponse> listDocuments(ServerRequest request) {
-        Flux<SearchResult> results = indexClient.search("*");
-        return ok().body(results, SearchResult.class);
+    // Get a count of all documents in the index
+    public Mono<ServerResponse> count(ServerRequest request) {
+        Mono<Long> count = indexClient.getDocumentCount();
+        return ok().body(count, Long.class);
     }
 
     @Override
@@ -124,12 +124,24 @@ public class AzureSearchHandler implements SearchHandler {
         SearchOptions options = new SearchOptions()
             .setFacets("Category", "Rating", "ParkingIncluded", "Rooms/SmokingAllowed");
 
-        Flux<Map<String, List<FacetResult>>> results = indexClient.search("*", options, new RequestOptions())
+        Mono<HashMap<String, HashMap<String, Long>>> results = indexClient.search("*", options, new RequestOptions())
             .byPage()
-            .map(SearchPagedResponse::facets);
+            .single()
+            .map(page -> {
+                HashMap<String, HashMap<String, Long>> facetResults = new HashMap<>();
+                for (Map.Entry<String, List<FacetResult>> entry : page.facets().entrySet()) {
+                    HashMap<String, Long> facetValues = new HashMap<>();
+                    for (FacetResult facetResult : entry.getValue()) {
+                        String value = facetResult.getDocument().get("value").toString();
+                        Long count = facetResult.getCount();
+                        facetValues.put(value, count);
+                    }
+                    facetResults.put(entry.getKey(), facetValues);
+                }
+                return facetResults;
+            });
 
-        ParameterizedTypeReference<Map<String, List<FacetResult>>> typeRef = new ParameterizedTypeReference<>() {};
-        return ok().body(results, typeRef);
+        return ok().body(results, new ParameterizedTypeReference<>() {});
     }
 
     @Override
@@ -140,10 +152,10 @@ public class AzureSearchHandler implements SearchHandler {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Flux<Hotel> results = indexClient.search("Seattle")
+        Flux<AzureHotel> results = indexClient.search("Seattle")
             .take(5)
-            .map(result -> mapper.convertValue(result.getDocument(), Hotel.class));
-        return ok().body(results, Hotel.class);
+            .map(result -> mapper.convertValue(result.getDocument(), AzureHotel.class));
+        return ok().body(results, AzureHotel.class);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package com.noelbundick.comparisons.search.models;
 
-import com.azure.search.models.GeoPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Hotel {
+public class ElasticsearchHotel {
     @JsonProperty(value = "HotelId")
     private String hotelId;
 
@@ -47,7 +47,7 @@ public class Hotel {
     @JsonProperty(value = "Rooms")
     private List<HotelRoom> rooms;
 
-    public Hotel() {
+    public ElasticsearchHotel() {
         this.tags = new ArrayList<>();
         this.rooms = new ArrayList<>();
     }
@@ -56,7 +56,7 @@ public class Hotel {
         return this.hotelId;
     }
 
-    public Hotel hotelId(String hotelId) {
+    public ElasticsearchHotel hotelId(String hotelId) {
         this.hotelId = hotelId;
         return this;
     }
@@ -65,7 +65,7 @@ public class Hotel {
         return this.hotelName;
     }
 
-    public Hotel hotelName(String hotelName) {
+    public ElasticsearchHotel hotelName(String hotelName) {
         this.hotelName = hotelName;
         return this;
     }
@@ -74,7 +74,7 @@ public class Hotel {
         return this.description;
     }
 
-    public Hotel description(String description) {
+    public ElasticsearchHotel description(String description) {
         this.description = description;
         return this;
     }
@@ -83,7 +83,7 @@ public class Hotel {
         return this.descriptionFr;
     }
 
-    public Hotel descriptionFr(String descriptionFr) {
+    public ElasticsearchHotel descriptionFr(String descriptionFr) {
         this.descriptionFr = descriptionFr;
         return this;
     }
@@ -92,7 +92,7 @@ public class Hotel {
         return this.category;
     }
 
-    public Hotel category(String category) {
+    public ElasticsearchHotel category(String category) {
         this.category = category;
         return this;
     }
@@ -101,7 +101,7 @@ public class Hotel {
         return this.tags;
     }
 
-    public Hotel tags(List<String> tags) {
+    public ElasticsearchHotel tags(List<String> tags) {
         this.tags = tags;
         return this;
     }
@@ -111,7 +111,7 @@ public class Hotel {
         return this.parkingIncluded;
     }
 
-    public Hotel parkingIncluded(Boolean parkingIncluded) {
+    public ElasticsearchHotel parkingIncluded(Boolean parkingIncluded) {
         this.parkingIncluded = parkingIncluded;
         return this;
     }
@@ -120,7 +120,7 @@ public class Hotel {
         return this.smokingAllowed;
     }
 
-    public Hotel smokingAllowed(Boolean smokingAllowed) {
+    public ElasticsearchHotel smokingAllowed(Boolean smokingAllowed) {
         this.smokingAllowed = smokingAllowed;
         return this;
     }
@@ -129,7 +129,7 @@ public class Hotel {
         return this.lastRenovationDate;
     }
 
-    public Hotel lastRenovationDate(Date lastRenovationDate) {
+    public ElasticsearchHotel lastRenovationDate(Date lastRenovationDate) {
         this.lastRenovationDate = lastRenovationDate;
         return this;
     }
@@ -138,7 +138,7 @@ public class Hotel {
         return this.rating;
     }
 
-    public Hotel rating(Integer rating) {
+    public ElasticsearchHotel rating(Integer rating) {
         this.rating = rating;
         return this;
     }
@@ -147,7 +147,7 @@ public class Hotel {
         return this.location;
     }
 
-    public Hotel location(GeoPoint location) {
+    public ElasticsearchHotel location(GeoPoint location) {
         this.location = location;
         return this;
     }
@@ -156,7 +156,7 @@ public class Hotel {
         return this.address;
     }
 
-    public Hotel address(HotelAddress address) {
+    public ElasticsearchHotel address(HotelAddress address) {
         this.address = address;
         return this;
     }
@@ -165,7 +165,7 @@ public class Hotel {
         return this.rooms;
     }
 
-    public Hotel rooms(List<HotelRoom> rooms) {
+    public ElasticsearchHotel rooms(List<HotelRoom> rooms) {
         this.rooms = rooms;
         return this;
     }

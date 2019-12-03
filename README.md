@@ -7,6 +7,7 @@ Required environment variables:
 * `AZURE_STORAGE_CONN_STRING`: A connection string for an Azure Storage Account
 * `AZURE_SEARCH_ENDPOINT`: An Azure Cognitive Search endpoint
 * `AZURE_SEARCH_KEY`: An Azure Cognitive Search admin key
+* `ELASTICSEARCH_HOST`: An Elasticsearch host
 
 ## Development
 
@@ -23,6 +24,8 @@ Tested with:
 
 ```shell
 export AZURE_STORAGE_CONN_STRING="<your_connection_string>"
+# ... set other required env vars here
+
 mvn spring-boot:run
 ```
 

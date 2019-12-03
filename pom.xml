@@ -29,15 +29,35 @@
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-tools</artifactId>
         </dependency>
+
+        <!-- Storage -->
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-blob</artifactId>
             <version>12.0.0</version>
         </dependency>
+
+        <!-- Search -->
         <dependency>
             <groupId>com.azure.search</groupId>
             <artifactId>azure-search</artifactId>
             <version>1.0.0-preview.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.4.2</version>
+        </dependency>
+        <!-- spring-boot-autoconfigure is preconfigured to pick up elasticsearch 6.8.4, so we have to explicitly choose correct downstream dependencies -->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>7.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>7.4.2</version>
         </dependency>
 
         <dependency>

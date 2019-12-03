@@ -36,6 +36,7 @@ RUN mvn dependency:go-offline -B
 ENV AZURE_STORAGE_CONN_STRING="DefaultEndpointsProtocol=https;AccountName=azurestorage;AccountKey=invalid_key;EndpointSuffix=core.windows.net"
 ENV AZURE_SEARCH_ENDPOINT="https://azuresearch.search.windows.net"
 ENV AZURE_SEARCH_KEY="bogus-key"
+ENV ELASTICSEARCH_HOST="elasticsearch"
 
 # Build the jar
 COPY ./src ./src

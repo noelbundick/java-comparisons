@@ -25,6 +25,9 @@ public class Router {
     @Value("${AZURE_SEARCH_KEY}")
     private String searchAdminKey;
 
+    @Value("${ELASTICSEARCH_HOST}")
+    private String elasticsearchHost;
+
     @Bean
     public RouterFunction<ServerResponse> hello() {
         return route()
@@ -46,7 +49,7 @@ public class Router {
             .path("search/azure",
                 builder -> routeBuilder.buildRoutes(builder, new AzureSearchHandler(searchEndpoint, searchAdminKey)))
             .path("search/elasticsearch",
-                builder -> routeBuilder.buildRoutes(builder, new ElasticsearchHandler()))
+                builder -> routeBuilder.buildRoutes(builder, new ElasticsearchHandler(elasticsearchHost)))
             .build();
     }
 

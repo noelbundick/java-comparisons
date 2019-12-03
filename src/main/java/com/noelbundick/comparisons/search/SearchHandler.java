@@ -14,7 +14,7 @@ public interface SearchHandler {
     Mono<ServerResponse> clear(ServerRequest request);
 
     // Retrieving data
-    Mono<ServerResponse> listDocuments(ServerRequest request);
+    Mono<ServerResponse> count(ServerRequest request);
     Mono<ServerResponse> search(ServerRequest request);
     Mono<ServerResponse> searchWithPaging(ServerRequest request);
     Mono<ServerResponse> searchWithFacets(ServerRequest request);
