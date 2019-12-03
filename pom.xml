@@ -39,9 +39,9 @@
 
         <!-- Search -->
         <dependency>
-            <groupId>com.azure.search</groupId>
+            <groupId>com.azure</groupId>
             <artifactId>azure-search</artifactId>
-            <version>1.0.0-preview.2</version>
+            <version>1.0.0-beta.1</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>

@@ -42,5 +42,9 @@ git rev-parse --short HEAD
 #### Install a JAR into the local Maven repository
 
 ```shell
+# if you have a pom file
+mvn install:install-file -Dfile=my-library-1.0.0-beta.1.jar -DpomFile=my-library-1.0.0-beta.1.pom
+
+# otherwise
 mvn install:install-file -DgroupId=com.example -DartifactId=my-library -Dversion=1.0.0 -Dpackaging=jar -Dfile=/lib/my-library.jar
 ```
